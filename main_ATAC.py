@@ -19,7 +19,7 @@ from random import random
 from time import sleep
 import argparse
 import logging
-from steps import trimming, align, coverage
+from steps import trimming, align, coverage, genrich, macs2
 
 
 if __name__=="__main__":
@@ -28,7 +28,7 @@ if __name__=="__main__":
 
     parser.add_argument("-i",'--input', dest='infile', action='store', required=False,
                         help='input folder to force. Will overwrite all ouputs')
-    parser.add_argument("-s",'--steps', dest='step', action='store', required=False, nargs="+",
+    parser.add_argument("-s",'--steps', dest='step', action='append', required=False,
                         help='chose steps instead of running everything')
 
     # parse arguments
@@ -39,15 +39,15 @@ if __name__=="__main__":
     Configuration.analysis_type = "ATAC"
 
     if args.infile == None:
-        all_raws_present = os.path.basename(glob.glob(Configuration.RAW_input_dir + "/*ATAC"))
+        all_raws_present = [os.path.basename(x) for x in glob.glob(Configuration.RAW_input_dir + "/*ATAC")]
 
         # randomly wait a little bit of time to make sure we don't crash into eachother
         # sleep(random()*20)
-        all_processed = os.path.basename(glob.glob(Configuration.Trimmed_dir + "/*ATAC"))
+        all_processed = [os.path.basename(x) for x in glob.glob(Configuration.Trimmed_dir + "/*ATAC")]
         # chose the first one of the ones that are still not processed and run 
         for i in all_raws_present:
             if i not in all_processed:
-                os.makedirs(os.path.join(Configuration.Trimmed_dir,i),exist_ok=True)
+                os.makedirs(os.path.join(Configuration.cleaned_alignments_dir,i),exist_ok=True)
                 Configuration.file_to_process = i
                 break
 
@@ -74,6 +74,18 @@ if __name__=="__main__":
         # run coverage
         coverage.coverage(Configuration)
 
+        # create file for genrich
+        genrich.create_bam_for_genrich(Configuration)
+
+        # run Genrich
+        genrich.run_genric_ATAC(Configuration)
+
+        # create file for macs2
+        macs2.create_bam_for_macs2_ATAC(Configuration)
+
+        # run macs2
+        macs2.run_macs2_ATAC(Configuration)
+
     else:
         if "trimming" in args.step:
             trimming.run_fastp(Configuration)
@@ -83,3 +95,9 @@ if __name__=="__main__":
             align.dedup_QC_alignments(Configuration)
         if "coverage" in args.step:
             coverage.coverage(Configuration)
+        if "genrich" in args.step:
+            genrich.create_bam_for_genrich(Configuration)
+            genrich.run_genric_ATAC(Configuration)
+        if "macs2" in args.step:
+            macs2.create_bam_for_macs2_ATAC(Configuration)
+            macs2.run_macs2_ATAC(Configuration)

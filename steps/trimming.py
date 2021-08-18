@@ -67,7 +67,7 @@ def _run_fastp_batch(lanes,Configuration):
     for lane in lanes:
         proc = subprocess.Popen(["fastp","-i",os.path.join(input_dir,lane)+"R1.fastq.gz","-I",os.path.join(input_dir,lane)+"R2.fastq.gz",
             "-o",os.path.join(output_dir,lane)+"R1.fastq.gz","-O",os.path.join(output_dir,lane)+"R2.fastq.gz",
-            "-r","-h",os.path.join(quality_dir,lane)+"_fastp.html","-j",os.path.join(quality_dir,lane)+"_fastp.json",
+            "-r","-h",os.path.join(quality_dir,lane)+"fastp.html","-j",os.path.join(quality_dir,lane)+"fastp.json",
             "-R",lane,"-p"])
         processes.append(proc)
     for p in processes:
