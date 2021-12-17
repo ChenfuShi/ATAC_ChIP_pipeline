@@ -9,11 +9,11 @@ import os
 import glob
 import logging
 import subprocess
+from steps.helpers import clean_dir
 
 def coverage(Configuration):
     """ 
-    searches for files in the expected trimmed directory and runs bowtie2 in normal configuration for ATAC or ChIP
-    there should be only one R1 file and one R2 file because they should have been merged
+
     """
     logging.info("starting bamcoverage")
 
@@ -23,7 +23,7 @@ def coverage(Configuration):
     coverage_output_dir = os.path.join(Configuration.coverages_dir, Configuration.file_to_process)
     coverage_output_file = coverage_output_dir + f"/{Configuration.file_to_process}_coverage.bw"  
     os.makedirs(coverage_output_dir, exist_ok=True)
-
+    clean_dir(coverage_output_dir)
     # exclude 1804
     # read unmapped (0x4)
     # mate unmapped (0x8)*

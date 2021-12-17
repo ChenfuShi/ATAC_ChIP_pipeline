@@ -34,6 +34,7 @@ class Config:
 
         self.file_to_process = None
         self.analysis_type = None
+        self.input_background = None
         
     def _init_logging(self):
         cur_date = datetime.datetime.now()

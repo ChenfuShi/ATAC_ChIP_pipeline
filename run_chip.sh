@@ -3,7 +3,7 @@
 #$ -j y
 #$ -o /mnt/jw01-aruk-home01/projects/psa_functional_genomics/master_ATAC_ChIP_analyzer/ATAC_ChIP_pipeline/logs
 
-#$ -t 1-42
+#$ -t 1-11
 INDEX=$((SGE_TASK_ID-1))
 # CD to directory
 cd /mnt/jw01-aruk-home01/projects/psa_functional_genomics/master_ATAC_ChIP_analyzer/ATAC_ChIP_pipeline
@@ -22,5 +22,5 @@ module load tools/java/1.8.0
 
 
 sleep $(($INDEX*20))
-python ./main_ATAC.py
+python ./main_CHIP.py
 

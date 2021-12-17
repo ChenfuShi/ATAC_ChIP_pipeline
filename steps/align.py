@@ -9,6 +9,7 @@ import os
 import glob
 import logging
 import subprocess
+from steps.helpers import clean_dir
 
 def align_bowtie(Configuration):
     """ 
@@ -22,6 +23,7 @@ def align_bowtie(Configuration):
 
     align_output_dir = os.path.join(Configuration.aligned_dir, Configuration.file_to_process)
     os.makedirs(align_output_dir, exist_ok=True)
+    clean_dir(align_output_dir)
 
     # align
     # -k reports maximum 10 alignments and -X reports alignments within 2000bp
@@ -45,10 +47,12 @@ def dedup_QC_alignments(Configuration):
     
     cleaned_align_output_dir = os.path.join(Configuration.cleaned_alignments_dir, Configuration.file_to_process)
     os.makedirs(cleaned_align_output_dir, exist_ok=True)
+    clean_dir(cleaned_align_output_dir)
     dedup_alignment_file = cleaned_align_output_dir + f"/{Configuration.file_to_process}_align_dedup.bam"
 
     qc_dir = os.path.join(Configuration.other_qc_dir, Configuration.file_to_process)
     os.makedirs(qc_dir, exist_ok=True)
+    clean_dir(qc_dir)
     mark_duplicates_qc = qc_dir + f"/{Configuration.file_to_process}_markdup_qc.txt"
     logging.info("running mark duplicates")
     cmd = f"java -XX:ParallelGCThreads=4 -XX:ParallelCMSThreads=4 -Xmx8G -jar {Configuration.picard} MarkDuplicates QUIET=true REMOVE_DUPLICATES=true CREATE_INDEX=true I={alignment_file} O={dedup_alignment_file} M={mark_duplicates_qc}"

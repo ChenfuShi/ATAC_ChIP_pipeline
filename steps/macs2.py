@@ -9,7 +9,7 @@ import os
 import glob
 import logging
 import subprocess
-
+from steps.helpers import clean_dir
 
 def create_bam_for_macs2_ATAC(Configuration):
     """
@@ -37,6 +37,28 @@ def run_macs2_ATAC(Configuration):
 
     macs2_output_dir = os.path.join(Configuration.macs2_dir, Configuration.file_to_process)
     os.makedirs(macs2_output_dir, exist_ok = True)
-
+    clean_dir(macs2_output_dir)
     subprocess.run(["macs2", "callpeak", "-f", "BAMPE", "-g", "hs", "--keep-dup", "all",
         "-n", Configuration.file_to_process, "-t", filtered_align_file, "--outdir", macs2_output_dir])
+
+def run_macs2_CHIP(Configuration):
+    """
+    run macs2 application
+    """
+    logging.info("running macs2")
+    cleaned_align_output_dir = os.path.join(Configuration.cleaned_alignments_dir, Configuration.file_to_process)
+    filtered_align_file = cleaned_align_output_dir + f"/{Configuration.file_to_process}_align_filtered_macs2.bam"
+
+    macs2_output_dir = os.path.join(Configuration.macs2_dir, Configuration.file_to_process)
+    os.makedirs(macs2_output_dir, exist_ok = True)
+    clean_dir(macs2_output_dir)
+
+    if Configuration.input_background is not None:
+        background_dir = os.path.join(Configuration.cleaned_alignments_dir, Configuration.input_background)
+        background_bam = f"{background_dir}/{Configuration.input_background}_align_filtered_macs2.bam"    
+
+        subprocess.run(["macs2", "callpeak", "-f", "BAMPE", "-g", "hs", "--keep-dup", "all",
+            "-n", Configuration.file_to_process, "-t", filtered_align_file, "-c", background_bam,"--outdir", macs2_output_dir])
+    else:
+        subprocess.run(["macs2", "callpeak", "-f", "BAMPE", "-g", "hs", "--keep-dup", "all",
+            "-n", Configuration.file_to_process, "-t", filtered_align_file, "--outdir", macs2_output_dir])
