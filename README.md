@@ -17,3 +17,7 @@ The way this software works is that it checks for folders in the reads_here dire
 2. Set in run_atac.sh the number of samples you are going to process. To do so set #$ -t 1-N with N being the number of samples you have.
 
 3. Submit the script to the CSF.
+   
+#### QC metrics
+QC metrics for sequencing (e.g. trimming) reads will be located in fastp_qc. 
+QC metrics for everything else will be located in the qc folder. These include peak calling metrics, alignment metrics, and fraction of reads in TSS and peaks.
