@@ -3,7 +3,7 @@
 #$ -j y
 #$ -o /mnt/jw01-aruk-home01/projects/psa_functional_genomics/master_ATAC_ChIP_analyzer/ATAC_ChIP_pipeline/logs
 
-#$ -t 1-42
+#$ -t 1-1
 INDEX=$((SGE_TASK_ID-1))
 # CD to directory
 cd /mnt/jw01-aruk-home01/projects/psa_functional_genomics/master_ATAC_ChIP_analyzer/ATAC_ChIP_pipeline

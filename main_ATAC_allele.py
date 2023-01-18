@@ -12,14 +12,14 @@
 
 ########################################
 
-from configuration import Config
+from configuration_allele import Config
 import os
 import glob
 from random import random
 from time import sleep
 import argparse
 import logging
-from steps import trimming, align, coverage, genrich, macs2, qc
+from steps import trimming, align, coverage, genrich, macs2
 
 
 if __name__=="__main__":
@@ -84,9 +84,6 @@ if __name__=="__main__":
         # run macs2
         macs2.run_macs2_ATAC(Configuration)
 
-        # qc
-        qc.run_qc(Configuration)
-
     else:
         if "trimming" in args.step:
             trimming.run_fastp(Configuration)
@@ -102,5 +99,3 @@ if __name__=="__main__":
         if "macs2" in args.step:
             macs2.create_bam_for_macs2_ATAC(Configuration)
             macs2.run_macs2_ATAC(Configuration)
-        if "qc" in args.step:
-            qc.run_qc(Configuration)
